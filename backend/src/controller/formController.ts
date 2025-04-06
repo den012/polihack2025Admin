@@ -41,6 +41,8 @@ export const createEvent = async (req: Request, res: Response): Promise<void> =>
       message: 'Event created successfully!',
       data: { id: (result as any).insertId, ...req.body },
     });
+
+    console.log('Event created successfully');
   } catch (error) {
     console.error('Error creating event:', error);
     res.status(500).json({
@@ -50,3 +52,20 @@ export const createEvent = async (req: Request, res: Response): Promise<void> =>
     });
   }
 };
+
+export const getCategories = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const [rows] = await pool.execute('SELECT * FROM category');
+    res.status(200).json({
+      success: true,
+      data: rows,
+    });
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch categories',
+      error: (error instanceof Error) ? error.message : 'Unknown error',
+    });
+  }
+}
