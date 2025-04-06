@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
+import axios from 'axios';
+
 import 'react-toastify/dist/ReactToastify.css';
 
 const App: React.FC = () => {
+  const API_URL = import.meta.env.VITE_API_URL; // Ensure this is set in your environment variables
+
   const [formData, setFormData] = useState({
     eventName: '',
     description: '',
@@ -30,34 +34,32 @@ const App: React.FC = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); // Prevent the default form submission behavior
 
-    // Mock response
-    const mockResponse = {
-      success: true,
-      message: 'Event submitted successfully!',
-      data: formData,
-    };
+    try {
+      // Send form data to the backend API
+      const response = await axios.post(`${API_URL}/api/events`, formData);
 
-    // Log the mock response to the console
-    console.log('Mock Response:', mockResponse);
+      // Show a success toast notification
+      toast.success(response.data.message);
 
-    // Show a success toast notification
-    toast.success('Event submitted successfully!');
-
-    // Reset all form fields
-    setFormData({
-      eventName: '',
-      description: '',
-      imageUrl: '',
-      isChecked: false,
-      date: '',
-      price: '',
-      location: '',
-      organizerName: '',
-      categoryId: '',
-    });
+      // Reset all form fields
+      setFormData({
+        eventName: '',
+        description: '',
+        imageUrl: '',
+        isChecked: false,
+        date: '',
+        price: '',
+        location: '',
+        organizerName: '',
+        categoryId: '',
+      });
+    } catch (error: any) {
+      console.error('Error submitting event:', error);
+      toast.error(error.response?.data?.message || 'Failed to submit event');
+    }
   };
 
   return (
