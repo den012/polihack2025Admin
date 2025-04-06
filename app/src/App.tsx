@@ -27,7 +27,11 @@ const App: React.FC = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get(`${API_URL}/api/categories`);
+        const response = await axios.get(`${API_URL}/api/categories`, {
+          headers: {
+            "ngrok-skip-browser-warning": "true"
+        }
+        });
         setCategories(response.data.data);
       } catch (error: any) {
         console.error('Error fetching categories:', error);
@@ -62,7 +66,11 @@ const App: React.FC = () => {
     setShowPasswordModal(false); // Close the modal
 
     try {
-      const response = await axios.post(`${API_URL}/api/events`, formData);
+      const response = await axios.post(`${API_URL}/api/events`, formData, {
+        headers: {
+          "ngrok-skip-browser-warning": "true"
+      }
+      });
 
       toast.success(response.data.message);
 
